@@ -5,7 +5,7 @@ const (
 )
 
 type city interface {
-	MoveIn(id int64) bool
+	MoveIn(id int64)
 	Invaders() []int64
 	Destroy()
 }
@@ -21,12 +21,7 @@ func New(id int64) *Alien {
 }
 
 func (a *Alien) Attack(c city) (invaders []int64, destroyed bool) {
-	a.interactions++
-
-	ok := c.MoveIn(a.id)
-	if !ok {
-		return invaders, destroyed
-	}
+	c.MoveIn(a.id)
 
 	invaders = c.Invaders()
 	if len(invaders) == 2 {
@@ -42,5 +37,6 @@ func (a *Alien) ID() int64 {
 }
 
 func (a *Alien) Continue() bool {
+	a.interactions++
 	return a.interactions < MaxInteractions
 }

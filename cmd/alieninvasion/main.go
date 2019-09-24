@@ -36,4 +36,6 @@ func main() {
 
 	// Print the world map again
 
+	w.PrintMap()
+
 }

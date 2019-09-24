@@ -5,6 +5,8 @@ import (
 	"io"
 	"math/rand"
 	"time"
+
+	"github.com/lucasdss/alieninvasion/pkg/world/city"
 )
 
 var (
@@ -14,9 +16,7 @@ var (
 type World struct {
 	name string
 
-	worldMap map[string]*City
-
-	invaders map[int64]*City
+	worldMap map[string]*city.City
 }
 
 func New(name string, worldMap io.Reader) (*World, error) {
@@ -27,13 +27,11 @@ func New(name string, worldMap io.Reader) (*World, error) {
 
 	world := World{
 		name:     name,
-		worldMap: make(map[string]*City),
-		invaders: make(map[int64]*City),
+		worldMap: make(map[string]*city.City),
 	}
 
-	for i := range cities {
-		c := cities[i]
-		world.worldMap[c.name] = &cities[i]
+	for _, c := range cities {
+		world.worldMap[c.Name()] = c
 	}
 
 	world.buildReferences()
@@ -43,23 +41,25 @@ func New(name string, worldMap io.Reader) (*World, error) {
 
 func (w *World) buildReferences() {
 
-	for _, city := range w.worldMap {
-		for _, d := range city.directions {
-			n := getCityName(d)
+	for _, worldCity := range w.worldMap {
+		for _, n := range worldCity.Directions() {
+
 			c, ok := w.worldMap[n]
 			if ok {
-				c.referencedBy = append(c.referencedBy, city)
+				// I am assming the city direction might not exist.
+				c.AddReference(worldCity)
 			}
+
 		}
 	}
 }
 
-func (w *World) City() *City {
+func (w *World) City() *city.City {
 
 	size := len(w.worldMap)
 	i := rand.New(rand.NewSource(time.Now().UnixNano())).Intn(size)
 
-	var city *City
+	var city *city.City
 	for _, c := range w.worldMap {
 		if i == 0 {
 			city = c
@@ -70,12 +70,12 @@ func (w *World) City() *City {
 	return city
 }
 
-func (w *World) Travel(c *City) (*City, error) {
+func (w *World) Travel(id int64, c *city.City) *city.City {
 	// If there is no more direction
 	// the alien is trapped.
-	cityName := c.next()
+	cityName := c.Next(id)
 	if cityName == "" {
-		return nil, ErrNoDirection
+		return nil
 	}
 
 	// In this case there is a direction
@@ -84,8 +84,8 @@ func (w *World) Travel(c *City) (*City, error) {
 	// same city until its interactions is over.
 	city, ok := w.worldMap[cityName]
 	if !ok {
-		return c, nil
+		return c
 	}
 
-	return city, nil
+	return city
 }

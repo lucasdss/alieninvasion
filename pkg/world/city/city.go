@@ -1,12 +1,15 @@
-package world
+package city
 
 import (
+	"fmt"
 	"math/rand"
 	"strings"
 	"time"
 )
 
 type City struct {
+	destroyed bool
+
 	name       string
 	directions []string
 
@@ -15,19 +18,17 @@ type City struct {
 	invaders []int64
 }
 
+func New(name string, directions []string) *City {
+
+	return &City{name: name, directions: directions}
+}
+
 func (c *City) Name() string {
 	return c.name
 }
 
-func (c *City) MoveIn(id int64) bool {
-	for i := range c.invaders {
-		if c.invaders[i] == id {
-			return false
-		}
-	}
+func (c *City) MoveIn(id int64) {
 	c.invaders = append(c.invaders, id)
-
-	return true
 }
 
 func (c *City) Invaders() []int64 {
@@ -35,9 +36,43 @@ func (c *City) Invaders() []int64 {
 }
 
 func (c *City) Destroy() {
+	c.destroyed = true
 	for i := range c.referencedBy {
 		c.referencedBy[i].deleteDirection(c.name)
 	}
+}
+
+func (c *City) Destroyed() bool {
+	return c.destroyed
+}
+
+func (c *City) Directions() (cityNames []string) {
+
+	for _, d := range c.directions {
+		cityNames = append(cityNames, getCityName(d))
+	}
+
+	return cityNames
+}
+
+func (c *City) AddReference(city *City) {
+	c.referencedBy = append(c.referencedBy, city)
+}
+
+func (c *City) Next(id int64) string {
+
+	c.moveOut(id)
+
+	return c.next()
+}
+
+func (c *City) String() string {
+	out := fmt.Sprintf("%s", c.name)
+	for _, d := range c.directions {
+		out = fmt.Sprintf("%s %s", out, d)
+	}
+
+	return out
 }
 
 func (c *City) moveOut(id int64) {
@@ -61,7 +96,9 @@ func (c *City) next() string {
 		return ""
 	}
 
-	i := rand.New(rand.NewSource(time.Now().UnixNano())).Intn(len(c.directions))
+	i := rand.New(
+		rand.NewSource(time.Now().UnixNano()),
+	).Intn(len(c.directions))
 
 	return getCityName(c.directions[i])
 }

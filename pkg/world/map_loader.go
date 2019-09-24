@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"io"
 	"strings"
+
+	"github.com/lucasdss/alieninvasion/pkg/world/city"
 )
 
-func loadMap(fd io.Reader) (cities []City, err error) {
+func loadMap(fd io.Reader) (cities []*city.City, err error) {
 
 	scanner := bufio.NewScanner(fd)
 
@@ -22,13 +24,7 @@ func loadMap(fd io.Reader) (cities []City, err error) {
 		name := strings.Trim(cityData[0], "\t\n")
 		directions := cityData[1:]
 
-		cities = append(
-			cities,
-			City{
-				name:       name,
-				directions: directions,
-			},
-		)
+		cities = append(cities, city.New(name, directions))
 	}
 
 	err = scanner.Err()
@@ -39,4 +35,14 @@ func loadMap(fd io.Reader) (cities []City, err error) {
 	}
 
 	return cities, nil
+}
+
+func (w *World) PrintMap() {
+
+	fmt.Printf("\n\n########## REMAINING WORLD ##########\n\n")
+	for _, c := range w.worldMap {
+		if !c.Destroyed() {
+			fmt.Printf("%s\n", c)
+		}
+	}
 }

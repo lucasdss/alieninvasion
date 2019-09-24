@@ -3,6 +3,8 @@ package world
 import (
 	"bytes"
 	"testing"
+
+	"github.com/lucasdss/alieninvasion/pkg/world/city"
 )
 
 func TestWorld(t *testing.T) {
@@ -10,26 +12,17 @@ func TestWorld(t *testing.T) {
 	tt := []struct {
 		name     string
 		data     *bytes.Buffer
-		expected []City
+		expected []*city.City
 	}{
 		{
 			name: "multi cities",
 			data: bytes.NewBufferString(`Foo north=Bar west=Baz south=Qu-ux
 Bar south=Foo west=Bee
 LX east=Bar west=Foo noth=Bee`),
-			expected: []City{
-				City{
-					name:       "Foo",
-					directions: []string{"north=Bar", "west=Baz", "south=Qu-ux"},
-				},
-				City{
-					name:       "Bar",
-					directions: []string{"south=Foo", "west=Bee"},
-				},
-				City{
-					name:       "LX",
-					directions: []string{"east=Bar", "west=Foo", "noth=Bee"},
-				},
+			expected: []*city.City{
+				city.New("Foo", []string{"north=Bar", "west=Baz", "south=Qu-ux"}),
+				city.New("Bar", []string{"south=Foo", "west=Bee"}),
+				city.New("LX", []string{"east=Bar", "west=Foo", "noth=Bee"}),
 			},
 		},
 	}
@@ -41,10 +34,22 @@ LX east=Bar west=Foo noth=Bee`),
 				t.Error(err)
 			}
 
-			for _, c := range world.cities {
-				t.Logf("\n%s - direction: %#v - referenced: ", c.name, c.directions)
-				for _, ref := range c.referencedBy {
-					t.Logf("city=%#v", ref.name)
+			if len(tc.expected) != len(world.worldMap) {
+				t.Errorf("expected %d; got %d", len(tc.expected), len(world.worldMap))
+			}
+
+			for _, e := range tc.expected {
+				var found bool
+				for _, c := range world.worldMap {
+					if c.Name() == e.Name() {
+						if c.String() != e.String() {
+							t.Errorf("expected %s; got %s", e.String(), c.String())
+						}
+						found = true
+					}
+				}
+				if !found {
+					t.Errorf("expected %s; got %#v", e.Name(), world.worldMap)
 				}
 			}
 
