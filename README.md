@@ -25,12 +25,14 @@ or
 
 ### Run
 
-`./alieninvasion -h
+```
+./alieninvasion -h
 Usage of ./alieninvasion:
   -map string
         path to world map file. (default "assets/world_map.txt")
   -n int
-        number os aliens invading the planet. (default 5)`
+        number os aliens invading the planet. (default 5)
+```
 
 ### Tests and Build
 
