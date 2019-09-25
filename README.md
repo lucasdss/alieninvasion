@@ -6,7 +6,7 @@
 
 Alien Invasion is a Golang exercise.
 
-The minimum requirements can be found at [Alien Invasion](assets/Alien Invasion.pdf).
+The more detailed description of this exercise can be found at [Alien Invasion](/assets/Alien%20Invasion.pdf).
 
 ## Assumptions Made
 
