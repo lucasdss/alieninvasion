@@ -50,36 +50,43 @@ func (inv *Invasion) Start() {
 		id := alien.ID()
 
 		if !alien.Continue() {
+			city := inv.alienCity[id]
+			msg := fmt.Sprintf("Alien %d could not attack the planet.", id)
+			if city != nil {
+				msg = fmt.Sprintf("Alien %d leaved the planet from city %s.", id, city.Name())
+			}
+			fmt.Println(msg)
 			inv.stop(id)
-			fmt.Printf("%d leaved the planed\n", id)
 			continue
 		}
 
 		c, ok := inv.alienCity[id]
 		if !ok {
-			c = inv.world.City()
-
-			inv.alienCity[id] = c
-			invaders, destroyed := alien.Attack(c)
-			if destroyed {
-				fmt.Printf("%s has been destroyed by alien %d and alien %d.\n", c.Name(), invaders[0], invaders[1])
-				inv.stop(invaders[0])
-				inv.stop(invaders[1])
+			c = inv.world.RandomCity()
+			if c.Destroyed() {
+				continue
 			}
-			continue
+			fmt.Printf("Alien %d deployed in city %s\n", id, c.Name())
+			inv.alienCity[id] = c
+			alien.MoveIn(c)
 		}
 
-		city := inv.world.Travel(id, c)
+		// If there is no more direction
+		// the alien is trapped.
+		city := inv.world.City(c.Next())
 		if city == nil {
-			continue
+			city = c
 		}
 
+		alien.Leave(c)
+		alien.MoveIn(city)
 		inv.alienCity[id] = city
-		invaders, destroyed := alien.Attack(city)
+
+		aliens, destroyed := alien.Attack(city)
 		if destroyed {
-			fmt.Printf("%s has been destroyed by alien %d and alien %d.\n", city.Name(), invaders[0], invaders[1])
-			inv.stop(invaders[0])
-			inv.stop(invaders[1])
+			fmt.Printf("%s has been destroyed by alien %d and alien %d.\n", city.Name(), aliens[0], aliens[1])
+			inv.stop(aliens[0])
+			inv.stop(aliens[1])
 		}
 
 	}

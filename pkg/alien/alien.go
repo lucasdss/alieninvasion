@@ -7,6 +7,7 @@ const (
 type city interface {
 	MoveIn(id int64)
 	Invaders() []int64
+	MoveOut(id int64)
 	Destroy()
 }
 
@@ -20,8 +21,15 @@ func New(id int64) *Alien {
 	return &Alien{id: id}
 }
 
-func (a *Alien) Attack(c city) (invaders []int64, destroyed bool) {
+func (a *Alien) Leave(c city) {
+	c.MoveOut(a.id)
+}
+
+func (a *Alien) MoveIn(c city) {
 	c.MoveIn(a.id)
+}
+
+func (a *Alien) Attack(c city) (invaders []int64, destroyed bool) {
 
 	invaders = c.Invaders()
 	if len(invaders) == 2 {

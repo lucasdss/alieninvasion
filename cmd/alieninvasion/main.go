@@ -17,7 +17,7 @@ func main() {
 	)
 
 	flag.StringVar(&mapfile, "map", "assets/world_map.txt", "path to world map file.")
-	flag.Int64Var(&numAliens, "aliens", 5, "number os aliens invading the planet.")
+	flag.Int64Var(&numAliens, "n", 5, "number os aliens invading the planet.")
 	flag.Parse()
 
 	fd, err := os.Open(mapfile)
@@ -34,8 +34,5 @@ func main() {
 
 	inv.Start()
 
-	// Print the world map again
-
 	w.PrintMap()
-
 }

@@ -31,6 +31,20 @@ func (c *City) MoveIn(id int64) {
 	c.invaders = append(c.invaders, id)
 }
 
+func (c *City) MoveOut(id int64) {
+	size := len(c.invaders)
+	for i, n := range c.invaders {
+		if n == id {
+			if size > 0 {
+				c.invaders[i] = c.invaders[size-1]
+				c.invaders = c.invaders[:size-1]
+			} else {
+				c.invaders = []int64{}
+			}
+		}
+	}
+}
+
 func (c *City) Invaders() []int64 {
 	return c.invaders
 }
@@ -59,13 +73,6 @@ func (c *City) AddReference(city *City) {
 	c.referencedBy = append(c.referencedBy, city)
 }
 
-func (c *City) Next(id int64) string {
-
-	c.moveOut(id)
-
-	return c.next()
-}
-
 func (c *City) String() string {
 	out := fmt.Sprintf("%s", c.name)
 	for _, d := range c.directions {
@@ -75,21 +82,7 @@ func (c *City) String() string {
 	return out
 }
 
-func (c *City) moveOut(id int64) {
-	size := len(c.invaders)
-	for i, n := range c.invaders {
-		if n == id {
-			if size > 0 {
-				c.invaders[i] = c.invaders[size-1]
-				c.invaders = c.invaders[:size-1]
-			} else {
-				c.invaders = []int64{}
-			}
-		}
-	}
-}
-
-func (c *City) next() string {
+func (c *City) Next() string {
 
 	size := len(c.directions)
 	if size == 0 {

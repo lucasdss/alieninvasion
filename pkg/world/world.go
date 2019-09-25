@@ -54,7 +54,7 @@ func (w *World) buildReferences() {
 	}
 }
 
-func (w *World) City() *city.City {
+func (w *World) RandomCity() *city.City {
 
 	size := len(w.worldMap)
 	i := rand.New(rand.NewSource(time.Now().UnixNano())).Intn(size)
@@ -70,22 +70,11 @@ func (w *World) City() *city.City {
 	return city
 }
 
-func (w *World) Travel(id int64, c *city.City) *city.City {
-	// If there is no more direction
-	// the alien is trapped.
-	cityName := c.Next(id)
-	if cityName == "" {
-		return nil
-	}
+func (w *World) City(name string) *city.City {
 
 	// In this case there is a direction
 	// but the city was never created.
 	// I decided to keep the alien at the
 	// same city until its interactions is over.
-	city, ok := w.worldMap[cityName]
-	if !ok {
-		return c
-	}
-
-	return city
+	return w.worldMap[name]
 }

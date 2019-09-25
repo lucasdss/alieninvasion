@@ -54,7 +54,7 @@ func TestCityInvadersInOut(t *testing.T) {
 			}
 
 			for _, id := range tc.moveOut {
-				tc.city.moveOut(id)
+				tc.city.MoveOut(id)
 			}
 
 			if len(tc.expected) != len(tc.city.invaders) {
