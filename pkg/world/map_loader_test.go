@@ -18,11 +18,11 @@ func TestMapLoader(t *testing.T) {
 			name: "multi cities",
 			data: bytes.NewBufferString(`Foo north=Bar west=Baz south=Qu-ux
 Bar south=Foo west=Bee
-LX east=Bar west=Foo noth=Bee`),
+LX east=Bar west=Foo north=Bee`),
 			expected: []*city.City{
 				city.New("Foo", []string{"north=Bar", "west=Baz", "south=Qu-ux"}),
 				city.New("Bar", []string{"south=Foo", "west=Bee"}),
-				city.New("LX", []string{"east=Bar", "west=Foo", "noth=Bee"}),
+				city.New("LX", []string{"east=Bar", "west=Foo", "north=Bee"}),
 			},
 		},
 	}
