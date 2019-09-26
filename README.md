@@ -11,7 +11,8 @@ The more detailed description of this exercise can be found at [Alien Invasion](
 ## Assumptions Made
 
 It's not specified if goroutines must be used, neither the use of channels.
-So there is a basic version avoiding concurrency and mutexes.
+
+So there is a basic version avoiding concurrency and mutexes and the default version using goroutines and channels.
 
 
 ## Build the code
@@ -26,8 +27,9 @@ or
 ### Run
 
 ```
-./alieninvasion -h
+$ ./alieninvasion -h
 Usage of ./alieninvasion:
+  -c    version with goroutines and channels. (default true)
   -map string
         path to world map file. (default "assets/world_map.txt")
   -n int

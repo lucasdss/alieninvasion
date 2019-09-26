@@ -57,17 +57,19 @@ func (w *World) buildReferences() {
 func (w *World) RandomCity() *city.City {
 
 	size := len(w.worldMap)
-	i := rand.New(rand.NewSource(time.Now().UnixNano())).Intn(size)
+	ri := rand.New(rand.NewSource(time.Now().UnixNano())).Intn(size)
 
-	var city *city.City
+	var i int
 	for _, c := range w.worldMap {
-		if i == 0 {
-			city = c
+		if i >= ri {
+			if !c.Destroyed() {
+				return c
+			}
 		}
-		i--
+		i++
 	}
 
-	return city
+	return nil
 }
 
 func (w *World) City(name string) *city.City {

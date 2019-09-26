@@ -63,7 +63,7 @@ func (inv *Invasion) Start() {
 		c, ok := inv.alienCity[id]
 		if !ok {
 			c = inv.world.RandomCity()
-			if c.Destroyed() {
+			if c == nil {
 				continue
 			}
 			fmt.Printf("Alien %d deployed in city %s\n", id, c.Name())
