@@ -46,7 +46,7 @@ func (w *World) buildReferences() {
 
 			c, ok := w.worldMap[n]
 			if ok {
-				// I am assming the city direction might not exist.
+				// I am assuming the city direction might not exist.
 				c.AddReference(worldCity)
 			}
 
@@ -54,6 +54,7 @@ func (w *World) buildReferences() {
 	}
 }
 
+// RandomCity is used to pick up any city inside the world.
 func (w *World) RandomCity() *city.City {
 
 	size := len(w.worldMap)
@@ -72,11 +73,13 @@ func (w *World) RandomCity() *city.City {
 	return nil
 }
 
+// City returns a pointer to city.City if the
+// city name is found. Otherwise the default
+// value is returned, it means a nil value.
+// In the case, there is a direction but the city
+// was never created, I decided to keep the alien at the
+// same city until its interaction is over.
 func (w *World) City(name string) *city.City {
 
-	// In this case there is a direction
-	// but the city was never created.
-	// I decided to keep the alien at the
-	// same city until its interactions is over.
 	return w.worldMap[name]
 }

@@ -36,13 +36,3 @@ func loadMap(fd io.Reader) (cities []*city.City, err error) {
 
 	return cities, nil
 }
-
-func (w *World) PrintMap() {
-
-	fmt.Printf("\n\n########## REMAINING WORLD ##########\n\n")
-	for _, c := range w.worldMap {
-		if !c.Destroyed() {
-			fmt.Printf("%s\n", c)
-		}
-	}
-}
