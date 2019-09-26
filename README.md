@@ -8,7 +8,7 @@ Alien Invasion is a Golang exercise.
 
 The more detailed description of this exercise can be found at [Alien Invasion](/assets/Alien%20Invasion.pdf).
 
-## Assumptions Made
+## Assumptions
 
 It's not specified if goroutines must be used, neither the use of channels.
 
